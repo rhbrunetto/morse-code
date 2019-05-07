@@ -5,11 +5,14 @@ import json
 import os
 import sys
 
+
 def run(arguments):
-    try: conf = json.load(arguments.config)
-    except Exception as e: raise Exception(e)        
-    
+    try:
+        conf = json.load(arguments.config)
+    except Exception as e:
+        raise Exception(e)
     print(conf)
+
 
 def parse_args():
     arguments_parser = argparse.ArgumentParser(
@@ -28,9 +31,8 @@ def parse_args():
         default='config/config.json',
         type=argparse.FileType('rt'),
         help=('Morse code configuration file. '
-            'Default: "conf/config.json"'))
+              'Default: "conf/config.json"'))
     return arguments_parser.parse_args(sys.argv[1:])
 
-if  __name__=="__main__":
+if __name__ == "__main__":
     run(arguments=parse_args())
-
