@@ -5,16 +5,22 @@ import json
 import os
 import sys
 
+from models.configuration import Config
+
 
 def run(arguments):
+    '''Loads configs and calls procedures'''
     try:
         conf = json.load(arguments.config)
+        if conf:
+            cfg = Config(conf)
     except Exception as e:
         raise Exception(e)
     print(conf)
 
 
 def parse_args():
+    '''Argument parser function'''
     arguments_parser = argparse.ArgumentParser(
         prog=sys.argv[0],
         description='Morse code text-audio converter.')
