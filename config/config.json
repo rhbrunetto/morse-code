@@ -1,5 +1,7 @@
 {
   "audio_frequency": 400,
+  "sampling_rate": 480000,
+  "amplitude": 16000,
   "unitary_time": 0.25,
   "dictionary":{
     "a": "10111",
@@ -39,6 +41,6 @@
     "9": "11101110111011101",
     "0": "1110111011101110111",
     " ": "0000000",
-    "SPACE_BETWEEN_LETTERS": "0"
+    "": "000"
   }
 }

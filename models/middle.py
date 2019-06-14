@@ -1,6 +1,6 @@
-from configuration import Config
-from enums.data_types import DataType
-from input import Input
+from .cfgy import Config
+from .enums.data_types import DataType
+from .input import Input
 
 
 class MiddleLanguageObject:
@@ -10,9 +10,40 @@ class MiddleLanguageObject:
         self.input = input
         self.data = None
 
+        if self.input and self.config:
+            self.convert_to_mid()
+
     def _convert_from_text(self):
         '''Converts from text to middle language'''
-        pass
+        try:
+            converted = []
+            dictionary = self.config.get_dictionary()
+            # Split data into lines
+            lines = self.input.get_data().lower().split(Config.NEW_LINE)
+            for line in lines:
+                converted_line = []
+                # Split line into words
+                words = line.split(Config.SPACE_BETWEEN_WORDS)
+                for word in words:
+                    # Convert each letter and concatenate them
+                    converted_line.append(
+                        dictionary.get(Config.SPACE_BETWEEN_LETTERS).join(
+                            map(
+                                lambda letter: dictionary.get(letter),
+                                [w for w in word]
+                            )))
+                # Concatenate words with SPACE_BETWEEN_WORDS
+                converted.append(
+                    dictionary.get(Config.SPACE_BETWEEN_WORDS).join(
+                        converted_line))
+            # Concatenate lines with NEW_LINE
+            self.data = Config.NEW_LINE.join(converted)
+            print('From text to middle:')
+            print(self.data)
+        except Exception as e:
+            print('Failed to convert text input to middle language.')
+            return False
+        return True
 
     def _convert_from_audio(self):
         '''Converts from audio to middle language'''
@@ -34,7 +65,7 @@ class MiddleLanguageObject:
         '''Converts from input data type to middle language'''
         fn = MiddleLanguageObject.CONVERSION_MAP.get(self.input.get_type())
         if not fn:
-            return Exception
+            raise Exception
         return fn(self)
 
     def get_data(self):

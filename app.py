@@ -1,11 +1,11 @@
-#!/bin/usr/python3
+#!/usr/bin/python3
 
 import argparse
 import json
 import os
 import sys
 
-from models.configuration import Config
+from converter import Converter
 
 
 def run(arguments):
@@ -13,10 +13,9 @@ def run(arguments):
     try:
         conf = json.load(arguments.config)
         if conf:
-            cfg = Config(conf)
+            Converter(conf, arguments.filename[0]).convert()
     except Exception as e:
         raise Exception(e)
-    print(conf)
 
 
 def parse_args():
@@ -25,7 +24,7 @@ def parse_args():
         prog=sys.argv[0],
         description='Morse code text-audio converter.')
     arguments_parser.add_argument(
-        'positional',
+        'filename',
         nargs=1,
         metavar='<file_path>',
         type=argparse.FileType('rt'),
