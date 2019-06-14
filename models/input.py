@@ -1,5 +1,6 @@
-from .enums.data_types import DataType
+import os
 
+from .enums.data_types import DataType
 
 class Input:
     '''Represents an input data'''
@@ -12,6 +13,9 @@ class Input:
         if not self.data:
             self.data = self.input_file.read()
         return self.data
+    
+    def get_main_name(self):
+        return os.path.splitext(self.input_file.name)[0]
 
     def get_type(self):
         '''Returns data type that is being manipulated'''

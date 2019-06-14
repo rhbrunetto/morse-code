@@ -1,5 +1,7 @@
 from .cfgy import Config
+from .enums.data_types import DataType
 from .middle import MiddleLanguageObject
+from .soundutils import AudioHanlder
 
 
 class IOutput:
@@ -9,6 +11,7 @@ class IOutput:
         self.data = None
         self.config = config
         self.mid = mid
+        self.file_name = self.mid.get_input_name() + str(self.get_type())
 
     def save_to_file(self):
         '''Saves data to a file'''
@@ -17,9 +20,30 @@ class IOutput:
     def convert_from_mid(self):
         '''Converts from middle language to target'''
         raise NotImplementedError
+    
+    def execute(self):
+        '''Converts and saves files'''
+        return self.convert_from_mid() and self.save_to_file()
+
+    @staticmethod
+    def get_type():
+        raise NotImplementedError
 
 
 class TextOutput(IOutput):
+    @staticmethod
+    def get_type():
+        return DataType.TEXT.value[0]
+
+    def save_to_file(self):
+        try:
+            with open(self.file_name, 'w') as f:
+                f.write(self.data)
+        except Exception as e:
+            print('Fail to save text', e)
+            return False
+        return True
+
     def convert_from_mid(self):
         try:
             converted = []
@@ -44,23 +68,45 @@ class TextOutput(IOutput):
                     Config.SPACE_BETWEEN_WORDS.join(converted_line))
             # Concatenate lines with NEW_LINE
             self.data = Config.NEW_LINE.join(converted)
-            print('From middle to text:')
-            print(self.data)
         except Exception as e:
-            print('Failed to convert middle language to text output.')
+            print('Failed to convert middle language to text output.', e)
             return False
         return True
 
 
-# https: // oz123.github.io/writings/morse-fun-with-python/index.html
-# http: // g4akw.blogspot.com/2011/12/python-morse-code-generator.html
 class AudioOutput(IOutput):
+    def __init__(self, config: Config, mid: MiddleLanguageObject):
+        super(AudioOutput, self).__init__(config, mid)
+        self.a_handler = AudioHanlder(self.config)
+
+    @staticmethod
+    def get_type():
+        return DataType.AUDIO.value[0]
+
+    def save_to_file(self):
+        return self.a_handler.save_wave(self.file_name)
+
     def convert_from_mid(self):
-        self.data = 'converted_data'
-        return True
+        if self.a_handler.generate_wave(self.mid.get_data()):
+            self.data = self.a_handler.get_waves()
+            return True
+        return False
 
 
 class MorseOutput(IOutput):
+    @staticmethod
+    def get_type():
+        return DataType.MORSE.value[0]
+
+    def save_to_file(self):
+        try:
+            with open(self.file_name, 'w') as f:
+                f.write(self.data)
+        except Exception as e:
+            print('Fail to save morse', e)
+            return False
+        return True
+
     def convert_from_mid(self):
         self.data = self.mid.get_data()
         return True

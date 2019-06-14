@@ -70,3 +70,6 @@ class MiddleLanguageObject:
 
     def get_data(self):
         return self.data
+    
+    def get_input_name(self):
+        return self.input.get_main_name()

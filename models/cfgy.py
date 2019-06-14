@@ -6,9 +6,11 @@ class Config:
     NEW_LINE = "\n"
 
     def __init__(self, config: dict):
+        self.amplitude = config.get('amplitude', 16000)
         self.audio_frequency = config.get('audio_frequency', 400)
-        self.unitary_time = config.get('unitary_time', 0.25)
         self.dictionary = config.get('dictionary', {})
+        self.sampling_rate = config.get('sampling_rate', 480000)
+        self.unitary_time = config.get('unitary_time', 0.25)
 
     def get_audio_frequency(self):
         return self.audio_frequency
@@ -18,3 +20,10 @@ class Config:
 
     def get_dictionary(self):
         return self.dictionary
+    
+    def get_sampling_rate(self):
+        return self.sampling_rate
+    
+    def get_amplitude(self):
+        return self.amplitude
+    
