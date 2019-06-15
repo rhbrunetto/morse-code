@@ -13,11 +13,11 @@ class Converter:
     def convert(self):
         mid = MiddleLanguageObject(self.input_file, self.config)
         # Text Output
-        if self.input_file.get_type() != TextOutput.get_type():
+        if self.input_file.get_type().value[0] != TextOutput.get_type():
             TextOutput(self.config, mid).execute()
         # # Audio Output
-        if self.input_file.get_type() != AudioOutput.get_type():
+        if self.input_file.get_type().value[0] != AudioOutput.get_type():
             AudioOutput(self.config, mid).execute()
         # # Morse Output
-        if self.input_file.get_type() != MorseOutput.get_type():
+        if self.input_file.get_type().value[0] != MorseOutput.get_type():
             MorseOutput(self.config, mid).execute()

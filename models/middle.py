@@ -1,5 +1,6 @@
 from .cfgy import Config
 from .enums.data_types import DataType
+from .soundutils import AudioHanlder
 from .input import Input
 
 
@@ -38,8 +39,6 @@ class MiddleLanguageObject:
                         converted_line))
             # Concatenate lines with NEW_LINE
             self.data = Config.NEW_LINE.join(converted)
-            print('From text to middle:')
-            print(self.data)
         except Exception as e:
             print('Failed to convert text input to middle language.')
             return False
@@ -47,7 +46,11 @@ class MiddleLanguageObject:
 
     def _convert_from_audio(self):
         '''Converts from audio to middle language'''
-        pass
+        a_handler = AudioHanlder(self.config)
+        if a_handler.load_wave(self.input.get_complete_name()):
+            self.data = a_handler.retrieve_message()
+            return True
+        return False
 
     def _convert_from_morse(self):
         '''Converts from morse code to middle language'''
@@ -65,7 +68,7 @@ class MiddleLanguageObject:
         '''Converts from input data type to middle language'''
         fn = MiddleLanguageObject.CONVERSION_MAP.get(self.input.get_type())
         if not fn:
-            raise Exception
+            raise Exception('Invalid input type')
         return fn(self)
 
     def get_data(self):

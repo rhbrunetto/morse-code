@@ -27,6 +27,7 @@ class IOutput:
 
     @staticmethod
     def get_type():
+        '''Returns output expected type'''
         raise NotImplementedError
 
 
@@ -36,6 +37,7 @@ class TextOutput(IOutput):
         return DataType.TEXT.value[0]
 
     def save_to_file(self):
+        print('Saving text file at {}'.format(self.file_name))
         try:
             with open(self.file_name, 'w') as f:
                 f.write(self.data)
@@ -45,6 +47,7 @@ class TextOutput(IOutput):
         return True
 
     def convert_from_mid(self):
+        print('Converting to text format...')
         try:
             converted = []
             dictionary = self.config.get_dictionary()
@@ -84,9 +87,12 @@ class AudioOutput(IOutput):
         return DataType.AUDIO.value[0]
 
     def save_to_file(self):
-        return self.a_handler.save_wave(self.file_name)
+        print('Saving audio file at {}'.format(self.file_name))
+        return self.a_handler.save_wave(
+            self.file_name) and self.a_handler.plot(self.file_name)
 
     def convert_from_mid(self):
+        print('Converting to audio format...')
         if self.a_handler.generate_wave(self.mid.get_data()):
             self.data = self.a_handler.get_waves()
             return True
@@ -99,6 +105,7 @@ class MorseOutput(IOutput):
         return DataType.MORSE.value[0]
 
     def save_to_file(self):
+        print('Saving morse file at {}'.format(self.file_name))
         try:
             with open(self.file_name, 'w') as f:
                 f.write(self.data)
@@ -108,5 +115,6 @@ class MorseOutput(IOutput):
         return True
 
     def convert_from_mid(self):
+        print('Converting to morse format...')
         self.data = self.mid.get_data()
         return True
