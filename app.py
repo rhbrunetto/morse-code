@@ -5,7 +5,7 @@ import json
 import os
 import sys
 
-from converter import Converter
+from src.converter import Converter
 
 
 def run(arguments):
