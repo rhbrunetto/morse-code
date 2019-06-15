@@ -11,7 +11,10 @@ from converter import Converter
 def run(arguments):
     '''Loads configs and calls procedures'''
     try:
-        conf = json.load(arguments.config)
+        cfg_file = arguments.config
+        if type(arguments.config) == list:
+            cfg_file = arguments.config[0]
+        conf = json.load(cfg_file)
         if conf:
             Converter(conf, arguments.filename[0]).convert()
     except Exception as e:
